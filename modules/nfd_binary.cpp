@@ -3462,8 +3462,8 @@ QList<XScanEngine::SCANSTRUCT> NFD_Binary::convert(QList<SCAN_STRUCT> *pListScan
         record.bIsUnknown = pListScanStructs->at(i).bIsUnknown;
         record.id = pListScanStructs->at(i).id;
         record.parentId = pListScanStructs->at(i).parentId;
-        record.nType = pListScanStructs->at(i).type;
-        record.nName = pListScanStructs->at(i).name;
+        record.type = pListScanStructs->at(i).type;
+        record.name = pListScanStructs->at(i).name;
         record.sType = XScanEngine::recordTypeIdToString(pListScanStructs->at(i).type);
         record.sName = XScanEngine::recordNameIdToString(pListScanStructs->at(i).name);
         record.sVersion = pListScanStructs->at(i).sVersion;

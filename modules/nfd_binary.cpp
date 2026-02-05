@@ -586,10 +586,6 @@ NFD_Binary::BASIC_INFO NFD_Binary::_initBasicInfo(XBinary *pBinary, XScanEngine:
     result.id.filePart = XBinary::FILEPART_HEADER;
     result.id.sUuid = XBinary::generateUUID();
     result.scanOptions = *pOptions;
-    result.id.sArch = result.memoryMap.sArch;
-    result.id.mode = result.memoryMap.mode;
-    result.id.endian = result.memoryMap.endian;
-    result.id.sType = result.memoryMap.sType;
     result.id.nOffset = nOffset;
 
     return result;

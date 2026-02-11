@@ -60,6 +60,8 @@ class SpecAbstract : public XScanEngine {
 public:
     explicit SpecAbstract(QObject *pParent = nullptr);
 
+    virtual QString getEngineName();
+
 protected:
     virtual void _processDetect(XScanEngine::SCANID *pScanID, XScanEngine::SCAN_RESULT *pScanResult, QIODevice *pDevice, const XScanEngine::SCANID &parentId,
                                 XBinary::FT fileType, XScanEngine::SCAN_OPTIONS *pScanOptions, bool bAddUnknown, XBinary::PDSTRUCT *pPdStruct);

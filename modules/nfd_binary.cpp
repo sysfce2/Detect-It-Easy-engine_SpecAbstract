@@ -641,7 +641,7 @@ void NFD_Binary::getLanguage(QMap<XScanEngine::RECORD_NAME, SCAN_STRUCT> *pMapDe
         i.next();
 
         SCAN_STRUCT ssDetect = i.value();
-        SCANS_STRUCT ssLanguage = {};
+        SCAN_STRUCT ssLanguage = {};
         ssLanguage.type = XScanEngine::RECORD_TYPE_LANGUAGE;
         ssLanguage.name = XScanEngine::RECORD_NAME_UNKNOWN;
 
@@ -668,9 +668,13 @@ void NFD_Binary::getLanguage(QMap<XScanEngine::RECORD_NAME, SCAN_STRUCT> *pMapDe
             case XScanEngine::RECORD_NAME_WATCOMCCPP: ssLanguage.name = XScanEngine::RECORD_NAME_CCPP; break;
             case XScanEngine::RECORD_NAME_CLANG:
             case XScanEngine::RECORD_NAME_GCC:
+            case XScanEngine::RECORD_NAME_ALIBABACLANG:
             case XScanEngine::RECORD_NAME_ALIPAYCLANG:
+            case XScanEngine::RECORD_NAME_ALPINECLANG:
             case XScanEngine::RECORD_NAME_ANDROIDCLANG:
+            case XScanEngine::RECORD_NAME_APPLELLVM:
             case XScanEngine::RECORD_NAME_APPORTABLECLANG:
+            case XScanEngine::RECORD_NAME_BYTEDANCESECCOMPILER:
             case XScanEngine::RECORD_NAME_PLEXCLANG:
             case XScanEngine::RECORD_NAME_UBUNTUCLANG:
             case XScanEngine::RECORD_NAME_DEBIANCLANG:
@@ -690,8 +694,12 @@ void NFD_Binary::getLanguage(QMap<XScanEngine::RECORD_NAME, SCAN_STRUCT> *pMapDe
             case XScanEngine::RECORD_NAME_MICROSOFTCPP:
             case XScanEngine::RECORD_NAME_TURBOCPP: ssLanguage.name = XScanEngine::RECORD_NAME_CPP; break;
             case XScanEngine::RECORD_NAME_ASSEMBLER:
+            case XScanEngine::RECORD_NAME_ARMASSEMBLER:
             case XScanEngine::RECORD_NAME_ARMTHUMBMACROASSEMBLER:
-            case XScanEngine::RECORD_NAME_GNUASSEMBLER: ssLanguage.name = XScanEngine::RECORD_NAME_ASSEMBLER; break;
+            case XScanEngine::RECORD_NAME_DYNASM:
+            case XScanEngine::RECORD_NAME_GNUASSEMBLER:
+            case XScanEngine::RECORD_NAME_ILASM:
+            case XScanEngine::RECORD_NAME_ROSASM: ssLanguage.name = XScanEngine::RECORD_NAME_ASSEMBLER; break;
             case XScanEngine::RECORD_NAME_FASM:
             case XScanEngine::RECORD_NAME_GOASM:
             case XScanEngine::RECORD_NAME_MASM:
@@ -743,6 +751,7 @@ void NFD_Binary::getLanguage(QMap<XScanEngine::RECORD_NAME, SCAN_STRUCT> *pMapDe
             case XScanEngine::RECORD_NAME_PYINSTALLER: ssLanguage.name = XScanEngine::RECORD_NAME_PYTHON; break;
             case XScanEngine::RECORD_NAME_SWIFT: ssLanguage.name = XScanEngine::RECORD_NAME_SWIFT; break;
             case XScanEngine::RECORD_NAME_PERL: ssLanguage.name = XScanEngine::RECORD_NAME_PERL; break;
+            case XScanEngine::RECORD_NAME_PHP: ssLanguage.name = XScanEngine::RECORD_NAME_PHP; break;
             case XScanEngine::RECORD_NAME_ZIG: ssLanguage.name = XScanEngine::RECORD_NAME_ZIG; break;
             case XScanEngine::RECORD_NAME_QML: ssLanguage.name = XScanEngine::RECORD_NAME_QML; break;
             default: ssLanguage.name = XScanEngine::RECORD_NAME_UNKNOWN;

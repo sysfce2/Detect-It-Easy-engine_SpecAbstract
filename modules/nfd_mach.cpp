@@ -126,7 +126,7 @@ void NFD_MACH::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOpti
                 (fileFormatInfo.osName == XBinary::OSNAME_MACOS)) {
                 recordSDK.name = XScanEngine::RECORD_NAME_MACOSSDK;
                 recordSDK.sVersion = XMACH::getSDKVersionFromFoundation(nVersion, fileFormatInfo.osName);
-                
+
                 if (!recordSDK.sVersion.isEmpty()) {
                     fileFormatInfo.osName = XMACH::getExactOSName(fileFormatInfo.osName, recordSDK.sVersion);
                 }
@@ -134,7 +134,7 @@ void NFD_MACH::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOpti
                        (fileFormatInfo.osName == XBinary::OSNAME_IPADOS)) {
                 recordSDK.name = XScanEngine::RECORD_NAME_IOSSDK;
                 recordSDK.sVersion = XMACH::getSDKVersionFromFoundation(nVersion, fileFormatInfo.osName);
-                
+
                 if (!recordSDK.sVersion.isEmpty()) {
                     fileFormatInfo.osName = XMACH::getExactOSName(fileFormatInfo.osName, recordSDK.sVersion);
                 }

@@ -6055,6 +6055,16 @@ void NFD_PE::handle_Microsoft(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
                     else if (sCompilerBuildVersion == "34810") ssTool.sVersion = "2022 version 17.13.2";
                     else if (sCompilerBuildVersion == "35207") ssTool.sVersion = "2022 version 17.14.0";  // 14.44
                     else if (sCompilerBuildVersion == "35213") ssTool.sVersion = "2022 version 17.14.9";  // 14.44
+                    // VS2026 (14.50+)
+                    else if (sCompilerBuildVersion == "35503") ssTool.sVersion = "2026 version 18.0.0";  // 14.50
+                    else if (sCompilerBuildVersion == "35508") ssTool.sVersion = "2026 version 18.0.2";
+                    else if (sCompilerBuildVersion == "35538") ssTool.sVersion = "2026 version 18.0.8";
+                    else if (sCompilerBuildVersion == "35607") ssTool.sVersion = "2026 version 18.1.1";  // 14.51
+                    else if (sCompilerBuildVersion == "35632") ssTool.sVersion = "2026 version 18.1.6";
+                    else if (sCompilerBuildVersion == "35651") ssTool.sVersion = "2026 version 18.2.0";  // 14.52
+                    else if (sCompilerBuildVersion == "35694") ssTool.sVersion = "2026 version 18.2.9";
+                    else if (sCompilerBuildVersion == "35703") ssTool.sVersion = "2026 version 18.3.0";  // 14.53
+                    else if (sCompilerBuildVersion == "35725") ssTool.sVersion = "2026 version 18.3.2";
                 }
             }
 
@@ -6106,7 +6116,8 @@ void NFD_PE::handle_Microsoft(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
                     else if (sLinkerMajorVersion == "14.42") ssTool.sVersion = "2022 version 17.12";
                     else if (sLinkerMajorVersion == "14.43") ssTool.sVersion = "2022 version 17.13";
                     else if (sLinkerMajorVersion == "14.44") ssTool.sVersion = "2022 version 17.14";
-                    else if (sLinkerMajorVersion == "14.50") ssTool.sVersion = "2026 version 18.00";
+                    else if (sLinkerMajorVersion == "14.50") ssTool.sVersion = "2026 version 18.00-18.03";
+                    else if (sLinkerMajorVersion == "14.51") ssTool.sVersion = "2026 version 18.04";
                 }
             }
 

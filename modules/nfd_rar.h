@@ -30,7 +30,7 @@ class NFD_RAR : public RAR_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_RAR(XRar *pRar, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_RAR(XRar *pRar, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct RARINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

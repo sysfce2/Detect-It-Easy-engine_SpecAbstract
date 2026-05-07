@@ -29,7 +29,7 @@ class NFD_MACHOFAT : public MACHOFAT_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_MACHOFAT(XMACHOFat *pMachofat, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_MACHOFAT(XMACHOFat *pMachofat, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct MACHOFATINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

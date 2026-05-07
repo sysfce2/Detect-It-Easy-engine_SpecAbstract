@@ -30,7 +30,7 @@ class NFD_PDF : public PDF_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_PDF(XPDF *pPDF, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_PDF(XPDF *pPDF, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct PDFINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

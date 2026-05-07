@@ -30,7 +30,7 @@ class NFD_COM : public COM_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_COM(XCOM *pCOM, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_COM(XCOM *pCOM, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct COMINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

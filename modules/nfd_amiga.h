@@ -30,7 +30,7 @@ class NFD_Amiga : public Amiga_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_Amiga(XAmigaHunk *pAmiga, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_Amiga(XAmigaHunk *pAmiga, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct AMIGAHUNKINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

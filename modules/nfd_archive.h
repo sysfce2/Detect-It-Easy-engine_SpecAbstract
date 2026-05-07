@@ -27,7 +27,7 @@ class NFD_Archive : public Archive_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_Archive(XArchive *pArchive, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_Archive(XArchive *pArchive, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_ARCHIVE_H

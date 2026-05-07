@@ -20,6 +20,6 @@
  */
 #include "nfd_image.h"
 
-NFD_IMAGE::NFD_IMAGE(XBinary *pImage, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : Image_Script(pImage, filePart, pOptions, pPdStruct)
+NFD_IMAGE::NFD_IMAGE(XBinary *pImage, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : Image_Script(pImage, filePart, scanOptions, pPdStruct)
 {
 }

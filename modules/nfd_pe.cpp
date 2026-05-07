@@ -1154,7 +1154,7 @@ NFD_Binary::SIGNATURE_RECORD _PE_dot_codesection_records[] = {
 };
 const qint32 _PE_dot_codesection_records_size = sizeof(_PE_dot_codesection_records);
 
-NFD_PE::NFD_PE(XPE *pPE, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : PE_Script(pPE, filePart, pOptions, pPdStruct)
+NFD_PE::NFD_PE(XPE *pPE, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : PE_Script(pPE, filePart, scanOptions, pPdStruct)
 {
 }
 

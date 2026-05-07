@@ -29,7 +29,7 @@ class QIODevice;
 class NFD_JPEG : public Jpeg_Script {
     Q_OBJECT
 public:
-    explicit NFD_JPEG(XJpeg *pJpeg, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_JPEG(XJpeg *pJpeg, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct JPEGINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

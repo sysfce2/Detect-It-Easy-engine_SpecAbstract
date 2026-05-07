@@ -26,7 +26,7 @@
 class NFD_PNG : public PNG_Script {
     Q_OBJECT
 public:
-    explicit NFD_PNG(XPNG *pPNG, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_PNG(XPNG *pPNG, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_PNG_H

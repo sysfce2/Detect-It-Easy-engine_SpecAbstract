@@ -27,7 +27,7 @@ class NFD_IPA : public IPA_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_IPA(XIPA *pIPA, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_IPA(XIPA *pIPA, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_IPA_H

@@ -32,7 +32,7 @@ class NFD_PE : public PE_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_PE(XPE *pPE, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_PE(XPE *pPE, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     using _SCANS_STRUCT = NFD_Binary::SCANS_STRUCT;
     using VI_STRUCT = NFD_Binary::VI_STRUCT;

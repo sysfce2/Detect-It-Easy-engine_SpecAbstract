@@ -27,7 +27,7 @@ class NFD_DOS4G : public DOS4G_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_DOS4G(XDOS16 *pXdos16, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_DOS4G(XDOS16 *pXdos16, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_DOS4G_H

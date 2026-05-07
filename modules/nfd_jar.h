@@ -31,7 +31,7 @@ class NFD_JAR : public JAR_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_JAR(XZip *pZip, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_JAR(XZip *pZip, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct JARINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

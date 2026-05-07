@@ -27,7 +27,7 @@ class NFD_DOS16M : public DOS16M_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_DOS16M(XDOS16 *pXdos16, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_DOS16M(XDOS16 *pXdos16, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_DOS16M_H

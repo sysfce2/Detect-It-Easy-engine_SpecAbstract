@@ -25,8 +25,8 @@
 #include "xarchive.h"
 #include "nfd_text.h"
 
-NFD_Binary::NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct)
-    : Binary_Script(pBinary, filePart, pOptions, pPdStruct)
+NFD_Binary::NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct)
+    : Binary_Script(pBinary, filePart, scanOptions, pPdStruct)
 {
 }
 
@@ -893,6 +893,7 @@ Binary_Script::OPTIONS NFD_Binary::toOptions(const XScanEngine::SCAN_OPTIONS *pS
     Binary_Script::OPTIONS opts = {};
     opts.bIsDeepScan = pScanOptions->bIsDeepScan;
     opts.bIsHeuristicScan = pScanOptions->bIsHeuristicScan;
+    opts.bIsFirstWrapperScan = pScanOptions->bIsFirstWrapperScan;
     opts.bIsAggressiveScan = pScanOptions->bIsAggressiveScan;
     opts.bIsVerbose = pScanOptions->bIsVerbose;
     // Profiling is a runtime tracing option; default to false here

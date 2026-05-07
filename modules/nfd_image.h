@@ -26,7 +26,7 @@
 class NFD_IMAGE : public Image_Script {
     Q_OBJECT
 public:
-    explicit NFD_IMAGE(XBinary *pImage, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_IMAGE(XBinary *pImage, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_IMAGE_H

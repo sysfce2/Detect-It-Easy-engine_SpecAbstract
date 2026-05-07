@@ -20,7 +20,7 @@
  */
 #include "nfd_mach.h"
 
-NFD_MACH::NFD_MACH(XMACH *pMACH, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : MACH_Script(pMACH, filePart, pOptions, pPdStruct)
+NFD_MACH::NFD_MACH(XMACH *pMACH, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : MACH_Script(pMACH, filePart, scanOptions, pPdStruct)
 {
 }
 

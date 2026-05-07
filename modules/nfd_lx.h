@@ -31,7 +31,7 @@ class NFD_LX : public LX_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_LX(XLE *pLX, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_LX(XLE *pLX, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct LXINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

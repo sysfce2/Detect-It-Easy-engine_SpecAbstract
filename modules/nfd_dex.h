@@ -28,7 +28,7 @@ class NFD_DEX : public DEX_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_DEX(XDEX *pDex, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_DEX(XDEX *pDex, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct DEXINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

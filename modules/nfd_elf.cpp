@@ -24,7 +24,7 @@
 using _SCANS_STRUCT = NFD_Binary::SCANS_STRUCT;
 using VI_STRUCT = NFD_Binary::VI_STRUCT;
 
-NFD_ELF::NFD_ELF(XELF *pELF, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : ELF_Script(pELF, filePart, pOptions, pPdStruct)
+NFD_ELF::NFD_ELF(XELF *pELF, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : ELF_Script(pELF, filePart, scanOptions, pPdStruct)
 {
 }
 

@@ -34,7 +34,7 @@ class NFD_ZIP : public ZIP_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_ZIP(XZip *pZip, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_ZIP(XZip *pZip, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct ZIPINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

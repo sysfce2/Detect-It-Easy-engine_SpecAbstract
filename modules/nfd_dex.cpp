@@ -20,7 +20,7 @@
  */
 #include "nfd_dex.h"
 
-NFD_DEX::NFD_DEX(XDEX *pDex, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : DEX_Script(pDex, filePart, pOptions, pPdStruct)
+NFD_DEX::NFD_DEX(XDEX *pDex, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : DEX_Script(pDex, filePart, scanOptions, pPdStruct)
 {
 }
 // Keep includes minimal; actual signature tables are defined below in this TU

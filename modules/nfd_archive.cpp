@@ -20,7 +20,7 @@
  */
 #include "nfd_archive.h"
 
-NFD_Archive::NFD_Archive(XArchive *pArchive, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct)
-    : Archive_Script(pArchive, filePart, pOptions, pPdStruct)
+NFD_Archive::NFD_Archive(XArchive *pArchive, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct)
+    : Archive_Script(pArchive, filePart, scanOptions, pPdStruct)
 {
 }

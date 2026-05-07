@@ -20,7 +20,7 @@
  */
 #include "nfd_jar.h"
 
-NFD_JAR::NFD_JAR(XZip *pZip, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct) : JAR_Script(pZip, filePart, pOptions, pPdStruct)
+NFD_JAR::NFD_JAR(XZip *pZip, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct) : JAR_Script(pZip, filePart, scanOptions, pPdStruct)
 {
 }
 
@@ -57,7 +57,7 @@ NFD_JAR::JARINFO_STRUCT NFD_JAR::getInfo(QIODevice *pDevice, XScanEngine::SCANID
         // Inline minimal subset of Zip_handle_Metainfos for JAR context
         {
             Binary_Script::OPTIONS binOpts = NFD_Binary::toOptions(pOptions);
-            JAR_Script js(&jar, parentId.filePart, &binOpts, pPdStruct);
+            JAR_Script js(&jar, parentId.filePart, binOpts, pPdStruct);
             QString sCreatedBy = js.getManifestRecord("Created-By");
             QString sBuiltBy = js.getManifestRecord("Built-By");
             QString sAntVersion = js.getManifestRecord("Ant-Version");

@@ -27,7 +27,7 @@ class NFD_NPM : public NPM_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_NPM(XNPM *pNpm, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_NPM(XNPM *pNpm, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 };
 
 #endif  // NFD_NPM_H

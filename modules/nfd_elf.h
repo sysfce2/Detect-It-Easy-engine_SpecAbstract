@@ -30,7 +30,7 @@ class NFD_ELF : public ELF_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_ELF(XELF *pELF, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_ELF(XELF *pELF, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct ELFINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

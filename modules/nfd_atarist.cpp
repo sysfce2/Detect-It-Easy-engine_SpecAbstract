@@ -20,8 +20,8 @@
  */
 #include "nfd_atarist.h"
 
-NFD_AtariST::NFD_AtariST(XAtariST *pAtariST, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct)
-    : AtariST_Script(pAtariST, filePart, pOptions, pPdStruct)
+NFD_AtariST::NFD_AtariST(XAtariST *pAtariST, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct)
+    : AtariST_Script(pAtariST, filePart, scanOptions, pPdStruct)
 {
 }
 

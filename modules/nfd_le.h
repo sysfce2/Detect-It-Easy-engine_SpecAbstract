@@ -31,7 +31,7 @@ class NFD_LE : public LE_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_LE(XLE *pLE, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_LE(XLE *pLE, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct LEINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

@@ -29,7 +29,7 @@ class NFD_MSDOS : public MSDOS_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_MSDOS(XMSDOS *pMSDOS, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_MSDOS(XMSDOS *pMSDOS, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct MSDOSINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

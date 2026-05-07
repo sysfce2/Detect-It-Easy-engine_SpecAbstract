@@ -31,7 +31,7 @@ class NFD_NE : public NE_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_NE(XNE *pNE, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_NE(XNE *pNE, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct NEINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

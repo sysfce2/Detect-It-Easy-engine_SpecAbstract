@@ -30,7 +30,7 @@ class NFD_JavaClass : public JavaClass_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_JavaClass(XJavaClass *pJavaClass, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_JavaClass(XJavaClass *pJavaClass, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct JAVACLASSINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

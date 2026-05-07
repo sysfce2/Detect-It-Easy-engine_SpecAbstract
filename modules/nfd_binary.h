@@ -260,7 +260,7 @@ public:
     // Utility: convert global scan options to Binary_Script options
     static Binary_Script::OPTIONS toOptions(const XScanEngine::SCAN_OPTIONS *pScanOptions);
 
-    explicit NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, Binary_Script::OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, const Binary_Script::OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     // Scanning helpers moved from SpecAbstract
     static void memoryScan(QMap<XScanEngine::RECORD_NAME, SCANS_STRUCT> *pMapRecords, QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, qint64 nOffset,

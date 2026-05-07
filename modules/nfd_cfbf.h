@@ -30,7 +30,7 @@ class NFD_CFBF : public CFBF_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_CFBF(XCFBF *pCFBF, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_CFBF(XCFBF *pCFBF, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct CFBFINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

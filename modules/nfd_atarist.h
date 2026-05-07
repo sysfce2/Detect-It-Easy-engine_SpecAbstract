@@ -30,7 +30,7 @@ class NFD_AtariST : public AtariST_Script {
     Q_OBJECT
 
 public:
-    explicit NFD_AtariST(XAtariST *pAtariST, XBinary::FILEPART filePart, OPTIONS *pOptions, XBinary::PDSTRUCT *pPdStruct);
+    explicit NFD_AtariST(XAtariST *pAtariST, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct);
 
     struct ATARISTINFO_STRUCT {
         NFD_Binary::BASIC_INFO basic_info;

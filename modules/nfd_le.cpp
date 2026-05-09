@@ -46,18 +46,15 @@ NFD_LE::LEINFO_STRUCT NFD_LE::getInfo(QIODevice *pDevice, XScanEngine::SCANID pa
             result.sOverlaySignature = le.getSignature(result.nOverlayOffset, 150);
         }
 
-        // MSDOS header linker signatures (moved from SpecAbstract)
         NFD_Binary::signatureScan(&result.basic_info.mapHeaderDetects, result.basic_info.sHeaderSignature, NFD_MSDOS::getHeaderLinkerRecords(),
                                   NFD_MSDOS::getHeaderLinkerRecordsSize(), result.basic_info.id.fileType, XBinary::FT_MSDOS, &(result.basic_info), DETECTTYPE_HEADER,
                                   pPdStruct);
 
-        // Operation System
         {
             NFD_Binary::SCANS_STRUCT ssOperationSystem = NFD_Binary::getOperationSystemScansStruct(le.getFileFormatInfo(pPdStruct));
             result.basic_info.mapResultOperationSystems.insert(ssOperationSystem.name, NFD_Binary::scansToScan(&(result.basic_info), &ssOperationSystem));
         }
 
-        // Borland Turbo Linker (version from VI if available)
         {
             NFD_Binary::VI_STRUCT vi = NFD_Binary::get_TurboLinker_vi(pDevice, pOptions);
             if (vi.bIsValid) {
@@ -72,11 +69,9 @@ NFD_LE::LEINFO_STRUCT NFD_LE::getInfo(QIODevice *pDevice, XScanEngine::SCANID pa
             }
         }
 
-        // Watcom C/C++ toolchain (compiler + linker)
         {
             NFD_Binary::VI_STRUCT vi = NFD_Binary::get_Watcom_vi(pDevice, pOptions, result.nEntryPointOffset, 0x100, pPdStruct);
             if (vi.bIsValid) {
-                // Compiler
                 NFD_Binary::SCANS_STRUCT ssCompiler = {};
                 ssCompiler.nVariant = 0;
                 ssCompiler.fileType = XBinary::FT_LX;  // keep parity with previous implementation
@@ -86,7 +81,6 @@ NFD_LE::LEINFO_STRUCT NFD_LE::getInfo(QIODevice *pDevice, XScanEngine::SCANID pa
                 ssCompiler.sInfo = vi.sInfo;
                 result.basic_info.mapResultCompilers.insert(ssCompiler.name, NFD_Binary::scansToScan(&(result.basic_info), &ssCompiler));
 
-                // Linker
                 NFD_Binary::SCANS_STRUCT ssLinker = {};
                 ssLinker.nVariant = 0;
                 ssLinker.fileType = XBinary::FT_LX;  // keep parity with previous implementation

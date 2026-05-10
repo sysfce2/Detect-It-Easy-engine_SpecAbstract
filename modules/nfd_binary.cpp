@@ -559,7 +559,7 @@ NFD_Binary::SCANS_STRUCT NFD_Binary::detectOperationSystem(XBinary *pBinary, XBi
 
     // Version and info
     result.sVersion = ffi.sOsVersion;
-    result.sInfo = QString("%1, %2, %3").arg(ffi.sArch, XBinary::modeIdToString(ffi.mode), ffi.sType);
+    result.sInfo = QString("%1, %2, %3").arg(ffi.sArch).arg(XBinary::modeIdToString(ffi.mode)).arg(ffi.sType);
     if (ffi.endian == XBinary::ENDIAN_BIG) {
         result.sInfo.append(QString(", %1").arg(XBinary::endianToString(XBinary::ENDIAN_BIG)));
     }
@@ -880,7 +880,7 @@ NFD_Binary::SCANS_STRUCT NFD_Binary::getOperationSystemScansStruct(const XBinary
     else if (fileFormatInfo.osName == XBinary::OSNAME_SEPOS) result.name = XScanEngine::RECORD_NAME_SEPOS;
     else result.name = XScanEngine::RECORD_NAME_UNKNOWN;
     result.sVersion = fileFormatInfo.sOsVersion;
-    result.sInfo = QString("%1, %2, %3").arg(fileFormatInfo.sArch, XBinary::modeIdToString(fileFormatInfo.mode), fileFormatInfo.sType);
+    result.sInfo = QString("%1, %2, %3").arg(fileFormatInfo.sArch).arg(XBinary::modeIdToString(fileFormatInfo.mode)).arg(fileFormatInfo.sType);
     if (fileFormatInfo.endian == XBinary::ENDIAN_BIG) {
         result.sInfo.append(QString(", %1").arg(XBinary::endianToString(XBinary::ENDIAN_BIG)));
     }
@@ -2779,7 +2779,7 @@ void NFD_Binary::handle_DebugData(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS 
                 // https://github.com/open-watcom/open-watcom-v2/blob/e7d0bef544987dd0429f547a2119e0c9d9472770/bld/exedump/c/wdwarf.c#L132
                 SCANS_STRUCT ss =
                     NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_DEBUGDATA, XScanEngine::RECORD_NAME_WATCOMDEBUGINFO, "", "", 0);
-                ss.sVersion = QString("%1.%2").arg(QString::number(exe_major_ver), QString::number(exe_minor_ver));
+                ss.sVersion = QString("%1.%2").arg(QString::number(exe_major_ver)).arg(QString::number(exe_minor_ver));
                 ss.sInfo = QString("0x%1 bytes").arg(XBinary::valueToHexEx(nDebugSize));
 
                 pBinaryInfo->basic_info.mapResultDebugData.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));

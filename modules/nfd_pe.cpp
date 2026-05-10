@@ -6732,7 +6732,7 @@ void NFD_PE::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOption
         // Visual Objects
         if (pe.compareSignature(&(pPEInfo->basic_info.memoryMap), "'This Visual Objects application cannot be run in DOS mode'", 0x312)) {
             _SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_VISUALOBJECTS, "2.XX", "", 0);
-            ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion), QString::number(pPEInfo->nMinorLinkerVersion));
+            ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion)).arg(QString::number(pPEInfo->nMinorLinkerVersion));
             pPEInfo->basic_info.mapResultCompilers.insert(ss.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ss));
         }
 
@@ -6740,7 +6740,7 @@ void NFD_PE::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOption
         if (pPEInfo->basic_info.mapHeaderDetects.contains(XScanEngine::RECORD_NAME_FASM)) {
             // TODO correct Version
             _SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_FASM, "", "", 0);
-            ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion), QString::number(pPEInfo->nMinorLinkerVersion));
+            ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion)).arg(QString::number(pPEInfo->nMinorLinkerVersion));
             pPEInfo->basic_info.mapResultCompilers.insert(ss.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ss));
         }
 
@@ -6792,7 +6792,7 @@ void NFD_PE::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOption
         // GoLink, GoAsm
         if (pPEInfo->basic_info.mapHeaderDetects.contains(XScanEngine::RECORD_NAME_GOLINK)) {
             _SCANS_STRUCT ssLinker = NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_LINKER, XScanEngine::RECORD_NAME_GOLINK, "", "", 0);
-            ssLinker.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion), QString::number(pPEInfo->nMinorLinkerVersion));
+            ssLinker.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion)).arg(QString::number(pPEInfo->nMinorLinkerVersion));
             pPEInfo->basic_info.mapResultLinkers.insert(ssLinker.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ssLinker));
 
             _SCANS_STRUCT ssCompiler = NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_GOASM, "", "", 0);
@@ -7023,7 +7023,7 @@ void NFD_PE::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOption
                         NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_VIRTUALPASCAL, "", "", 0);
 
                     // TODO Version???
-                    ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion), QString::number(pPEInfo->nMinorLinkerVersion));
+                    ss.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion)).arg(QString::number(pPEInfo->nMinorLinkerVersion));
                     pPEInfo->basic_info.mapResultCompilers.insert(ss.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ss));
                 }
             }
@@ -7063,7 +7063,7 @@ void NFD_PE::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOption
                     _SCANS_STRUCT ssLinker = {};
                     ssLinker.name = XScanEngine::RECORD_NAME_LCCLNK;
                     ssLinker.type = XScanEngine::RECORD_TYPE_LINKER;
-                    ssLinker.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion), QString::number(pPEInfo->nMinorLinkerVersion));
+                    ssLinker.sVersion = QString("%1.%2").arg(QString::number(pPEInfo->nMajorLinkerVersion)).arg(QString::number(pPEInfo->nMinorLinkerVersion));
                     pPEInfo->basic_info.mapResultLinkers.insert(ssLinker.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ssLinker));
                 }
             }
@@ -7228,7 +7228,7 @@ void NFD_PE::_fixRichSignatures(QList<_SCANS_STRUCT> *pListRichSignatures, qint3
                 else nMinorVersion = 50;  // Future versions
             }
 
-            (*pListRichSignatures)[i].sVersion = QString("%1.%2.%3").arg(sMajor, QString::number(nMinorVersion), sBuild);
+            (*pListRichSignatures)[i].sVersion = QString("%1.%2.%3").arg(sMajor).arg(QString::number(nMinorVersion)).arg(sBuild);
         }
     }
 }

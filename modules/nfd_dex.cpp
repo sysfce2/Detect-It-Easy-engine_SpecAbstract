@@ -101,6 +101,8 @@ void NFD_DEX::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptio
         recordAndroidSDK.sVersion = "API 26";
     } else if (sDDEXVersion == "039") {
         recordAndroidSDK.sVersion = "API 28";
+    } else if (sDDEXVersion == "040") {
+        recordAndroidSDK.sVersion = "API 29";
     } else {
         recordAndroidSDK.sVersion = sDDEXVersion;
     }

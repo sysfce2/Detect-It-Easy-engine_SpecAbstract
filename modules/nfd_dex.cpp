@@ -82,6 +82,19 @@ qint32 NFD_DEX::getTypeRecordsSize()
     return sizeof(g_DEX_type_records);
 }
 
+static void _dexAddCompiler(NFD_DEX::DEXINFO_STRUCT *pDEXInfo, XScanEngine::RECORD_NAME name, const NFD_Binary::VI_STRUCT *pVi, const QString &sInfoAppend)
+{
+    NFD_Binary::SCANS_STRUCT recordCompiler = NFD_Binary::getScansStruct(0, XBinary::FT_DEX, XScanEngine::RECORD_TYPE_COMPILER, name, "", "", 0);
+    if (pVi && pVi->bIsValid) {
+        recordCompiler.sVersion = pVi->sVersion;
+        recordCompiler.sInfo = pVi->sInfo;
+    }
+    if (!sInfoAppend.isEmpty()) {
+        recordCompiler.sInfo = XBinary::appendComma(recordCompiler.sInfo, sInfoAppend);
+    }
+    pDEXInfo->basic_info.mapResultCompilers.insert(recordCompiler.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &recordCompiler));
+}
+
 void NFD_DEX::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, DEXINFO_STRUCT *pDEXInfo, XBinary::PDSTRUCT *pPdStruct)
 {
     XDEX dex(pDevice);
@@ -220,40 +233,28 @@ void NFD_DEX::handle_Tools(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptio
     bool bDexMerge_map = XDEX::compareMapItems(&(pDEXInfo->mapItems), &listDexMerge, pPdStruct);
     bool bFastProxy_map = XDEX::compareMapItems(&(pDEXInfo->mapItems), &listFastProxy, pPdStruct);
 
-    auto addCompiler = [&](XScanEngine::RECORD_NAME name, const NFD_Binary::VI_STRUCT *pVi, const QString &sInfoAppend) {
-        NFD_Binary::SCANS_STRUCT recordCompiler = NFD_Binary::getScansStruct(0, XBinary::FT_DEX, XScanEngine::RECORD_TYPE_COMPILER, name, "", "", 0);
-        if (pVi && pVi->bIsValid) {
-            recordCompiler.sVersion = pVi->sVersion;
-            recordCompiler.sInfo = pVi->sInfo;
-        }
-        if (!sInfoAppend.isEmpty()) {
-            recordCompiler.sInfo = XBinary::appendComma(recordCompiler.sInfo, sInfoAppend);
-        }
-        pDEXInfo->basic_info.mapResultCompilers.insert(recordCompiler.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &recordCompiler));
-    };
-
     if (viR8.bIsValid) {
-        addCompiler(XScanEngine::RECORD_NAME_R8, &viR8, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_R8, &viR8, QString());
     } else if (!(pDEXInfo->bIsStringPoolSorted)) {
-        addCompiler(XScanEngine::RECORD_NAME_DEXLIB, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_DEXLIB, nullptr, QString());
     } else if (bDX_map) {
-        addCompiler(XScanEngine::RECORD_NAME_DX, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_DX, nullptr, QString());
     } else if (bDexLib2_map) {
-        addCompiler(XScanEngine::RECORD_NAME_DEXLIB2, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_DEXLIB2, nullptr, QString());
     } else if (bR8_map) {
-        addCompiler(XScanEngine::RECORD_NAME_R8, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_R8, nullptr, QString());
     } else if (bDexLib2heur_map) {
-        addCompiler(XScanEngine::RECORD_NAME_DEXLIB2, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_DEXLIB2, nullptr, QString());
     } else if (bFastProxy_map) {
-        addCompiler(XScanEngine::RECORD_NAME_FASTPROXY, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_FASTPROXY, nullptr, QString());
     }
 
     if (bDexMerge_map) {
-        addCompiler(XScanEngine::RECORD_NAME_DEXMERGE, nullptr, QString());
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_DEXMERGE, nullptr, QString());
     }
 
     if (viR8.bIsValid && (!bR8_map)) {
-        addCompiler(XScanEngine::RECORD_NAME_R8, &viR8, "CHECK !!!");
+        _dexAddCompiler(pDEXInfo, XScanEngine::RECORD_NAME_R8, &viR8, "CHECK !!!");
     }
 
     if (pDEXInfo->basic_info.scanOptions.bIsDeepScan) {
@@ -329,17 +330,18 @@ void NFD_DEX::handle_Dexguard(QIODevice *pDevice, DEXINFO_STRUCT *pDEXInfo, XBin
     }
 }
 
+static void _dexAddIfPresent(NFD_DEX::DEXINFO_STRUCT *pDEXInfo, QMap<XScanEngine::RECORD_NAME, NFD_Binary::SCANS_STRUCT> &srcMap, XScanEngine::RECORD_NAME name)
+{
+    if (srcMap.contains(name)) {
+        NFD_Binary::SCANS_STRUCT ss = srcMap.value(name);
+        pDEXInfo->basic_info.mapResultProtectors.insert(ss.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &ss));
+    }
+}
+
 void NFD_DEX::handle_Protection(QIODevice *pDevice, DEXINFO_STRUCT *pDEXInfo, XBinary::PDSTRUCT *pPdStruct)
 {
     XDEX dex(pDevice);
     if (!dex.isValid(pPdStruct)) return;
-
-    auto addIfPresent = [&](QMap<XScanEngine::RECORD_NAME, NFD_Binary::SCANS_STRUCT> &srcMap, XScanEngine::RECORD_NAME name) {
-        if (srcMap.contains(name)) {
-            auto ss = srcMap.value(name);
-            pDEXInfo->basic_info.mapResultProtectors.insert(ss.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &ss));
-        }
-    };
 
     if (pDEXInfo->bIsOverlayPresent) {
         if (dex.getOverlaySize(&(pDEXInfo->basic_info.memoryMap), pPdStruct) == 0x60) {
@@ -355,18 +357,18 @@ void NFD_DEX::handle_Protection(QIODevice *pDevice, DEXINFO_STRUCT *pDEXInfo, XB
         }
     }
 
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_EASYPROTECTOR);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_QDBH);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_JIAGU);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_BANGCLEPROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_ALLATORIOBFUSCATOR);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_PANGXIE);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_NAGAPTPROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_MODGUARD);
-    addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_KIWIVERSIONOBFUSCATOR);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_EASYPROTECTOR);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_QDBH);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_JIAGU);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_BANGCLEPROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_ALLATORIOBFUSCATOR);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_PANGXIE);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_NAGAPTPROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_MODGUARD);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_KIWIVERSIONOBFUSCATOR);
 
     if (pDEXInfo->basic_info.mapStringDetects.contains(XScanEngine::RECORD_NAME_APKPROTECT)) {
-        addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_APKPROTECT);
+        _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_APKPROTECT);
     } else if (pDEXInfo->basic_info.scanOptions.bIsDeepScan && XBinary::isStringInListPresentExp(&(pDEXInfo->listStrings), "http://www.apkprotect.net/", pPdStruct)) {
         NFD_Binary::SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_DEX, XScanEngine::RECORD_TYPE_PROTECTOR, XScanEngine::RECORD_NAME_APKPROTECT, "", "", 0);
         pDEXInfo->basic_info.mapResultProtectors.insert(ss.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &ss));
@@ -374,7 +376,7 @@ void NFD_DEX::handle_Protection(QIODevice *pDevice, DEXINFO_STRUCT *pDEXInfo, XB
 
     if (pDEXInfo->basic_info.scanOptions.bIsHeuristicScan) {
         if (pDEXInfo->basic_info.mapStringDetects.contains(XScanEngine::RECORD_NAME_AESOBFUSCATOR)) {
-            addIfPresent(pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_AESOBFUSCATOR);
+            _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapStringDetects, XScanEngine::RECORD_NAME_AESOBFUSCATOR);
         } else if (pDEXInfo->basic_info.scanOptions.bIsDeepScan && XBinary::isStringInListPresentExp(&(pDEXInfo->listStrings), "licensing/AESObfuscator;", pPdStruct)) {
             NFD_Binary::SCANS_STRUCT ss =
                 NFD_Binary::getScansStruct(0, XBinary::FT_DEX, XScanEngine::RECORD_TYPE_PROTECTOR, XScanEngine::RECORD_NAME_AESOBFUSCATOR, "", "", 0);
@@ -383,22 +385,22 @@ void NFD_DEX::handle_Protection(QIODevice *pDevice, DEXINFO_STRUCT *pDEXInfo, XB
     }
 
     // Type-based detections
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_BTWORKSCODEGUARD);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_QIHOO360PROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_ALIBABAPROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_BAIDUPROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_TENCENTPROTECTION);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_SECNEO);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_LIAPP);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_VDOG);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_APPSOLID);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_MEDUSAH);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_NQSHIELD);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_YIDUN);
-    addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_APKENCRYPTOR);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_BTWORKSCODEGUARD);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_QIHOO360PROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_ALIBABAPROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_BAIDUPROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_TENCENTPROTECTION);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_SECNEO);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_LIAPP);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_VDOG);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_APPSOLID);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_MEDUSAH);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_NQSHIELD);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_YIDUN);
+    _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_APKENCRYPTOR);
 
     if (pDEXInfo->basic_info.mapTypeDetects.contains(XScanEngine::RECORD_NAME_PROGUARD)) {
-        addIfPresent(pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_PROGUARD);
+        _dexAddIfPresent(pDEXInfo, pDEXInfo->basic_info.mapTypeDetects, XScanEngine::RECORD_NAME_PROGUARD);
     } else if (pDEXInfo->basic_info.scanOptions.bIsDeepScan && XBinary::isStringInListPresentExp(&(pDEXInfo->listTypeItemStrings), "\\/proguard\\/", pPdStruct)) {
         NFD_Binary::SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_DEX, XScanEngine::RECORD_TYPE_PROTECTOR, XScanEngine::RECORD_NAME_PROGUARD, "", "", 0);
         pDEXInfo->basic_info.mapResultProtectors.insert(ss.name, NFD_Binary::scansToScan(&(pDEXInfo->basic_info), &ss));

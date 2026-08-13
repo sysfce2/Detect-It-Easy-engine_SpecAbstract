@@ -149,7 +149,7 @@ NFD_JAR::JARINFO_STRUCT NFD_JAR::getInfo(QIODevice *pDevice, XScanEngine::SCANID
                                                       XScanEngine::RECORD_NAME_BEAWEBLOGIC};
             for (XScanEngine::RECORD_NAME name : names) {
                 if (result.basic_info.mapMetainfosDetects.contains(name)) {
-                    auto ss = result.basic_info.mapMetainfosDetects.value(name);
+                    NFD_Binary::SCANS_STRUCT ss = result.basic_info.mapMetainfosDetects.value(name);
                     result.basic_info.mapResultTools.insert(ss.name, NFD_Binary::scansToScan(&(result.basic_info), &ss));
                 }
             }

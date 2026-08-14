@@ -62,6 +62,8 @@ public:
         XScanEngine::SCANID parentId;
         XScanEngine::RECORD_TYPE type;
         XScanEngine::RECORD_NAME name;
+        QString sType;
+        QString sName;
         QString sVersion;
         QString sInfo;
     };
@@ -94,6 +96,8 @@ public:
         XBinary::FT fileType;
         XScanEngine::RECORD_TYPE type;
         XScanEngine::RECORD_NAME name;
+        QString sType;
+        QString sName;
         QString sVersion;
         QString sInfo;
         bool bIsHeuristic;

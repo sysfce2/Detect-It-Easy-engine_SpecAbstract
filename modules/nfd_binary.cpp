@@ -25,6 +25,8 @@
 #include "xarchive.h"
 #include "nfd_text.h"
 
+#include <QRegularExpression>
+
 NFD_Binary::NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct)
     : Binary_Script(pBinary, filePart, scanOptions, pPdStruct)
 {
@@ -33,16 +35,18 @@ NFD_Binary::NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, const OPTIO
 QString NFD_Binary::SCANS_STRUCT_toString(const SCANS_STRUCT *pScanStruct, bool bShowType)
 {
     QString sResult;
+    QString sType = pScanStruct->sType.isEmpty() ? XScanEngine::recordTypeIdToString(pScanStruct->type) : pScanStruct->sType;
+    QString sName = pScanStruct->sName.isEmpty() ? XScanEngine::recordNameIdToString(pScanStruct->name) : pScanStruct->sName;
 
     if (pScanStruct->bIsHeuristic) {
         sResult += "(Heur)";
     }
 
     if (bShowType) {
-        sResult += QString("%1: ").arg(XScanEngine::translateType(XScanEngine::recordTypeIdToString(pScanStruct->type)));
+        sResult += QString("%1: ").arg(XScanEngine::translateType(sType));
     }
 
-    sResult += QString("%1").arg(XScanEngine::recordNameIdToString(pScanStruct->name));
+    sResult += QString("%1").arg(sName);
 
     if (pScanStruct->sVersion != "") {
         sResult += QString("(%1)").arg(pScanStruct->sVersion);
@@ -521,6 +525,8 @@ NFD_Binary::SCAN_STRUCT NFD_Binary::scansToScan(NFD_Binary::BASIC_INFO *pBasicIn
     result.bIsUnknown = pScansStruct->bIsUnknown;
     result.type = pScansStruct->type;
     result.name = pScansStruct->name;
+    result.sType = pScansStruct->sType;
+    result.sName = pScansStruct->sName;
     result.sVersion = pScansStruct->sVersion;
     result.sInfo = pScansStruct->sInfo;
 
@@ -2386,117 +2392,115 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
 {
     XBinary binary(pDevice, pOptions->bIsImage);
 
-    if ((pBinaryInfo->bIsPlainText) || (pBinaryInfo->unicodeType != XBinary::UNICODE_TYPE_NONE) || (pBinaryInfo->bIsUTF8)) {
-        qint32 nSignaturesCount = NFD_TEXT::getTextExpRecordsSize() / sizeof(NFD_Binary::STRING_RECORD);
+    const bool bIsText = pBinaryInfo->bIsPlainText || (pBinaryInfo->unicodeType != XBinary::UNICODE_TYPE_NONE) || pBinaryInfo->bIsUTF8;
+    const QString &sText = pBinaryInfo->sHeaderText;
 
-        for (qint32 i = 0; (i < nSignaturesCount) && (XBinary::isPdStructNotCanceled(pPdStruct)); i++)  // TODO move to an own function !!!
-        {
-            if (XBinary::isRegExpPresent(NFD_TEXT::getTextExpRecords()[i].pszString, pBinaryInfo->sHeaderText)) {
-                SCANS_STRUCT record = {};
-                record.nVariant = NFD_TEXT::getTextExpRecords()[i].basicInfo.nVariant;
-                record.fileType = NFD_TEXT::getTextExpRecords()[i].basicInfo.fileType;
-                record.type = NFD_TEXT::getTextExpRecords()[i].basicInfo.type;
-                record.name = NFD_TEXT::getTextExpRecords()[i].basicInfo.name;
-                record.sVersion = NFD_TEXT::getTextExpRecords()[i].basicInfo.pszVersion;
-                record.sInfo = NFD_TEXT::getTextExpRecords()[i].basicInfo.pszInfo;
-                record.nOffset = 0;
+    auto addTextRecord = [pBinaryInfo](XScanEngine::RECORD_NAME key, const QString &sType, const QString &sName, const QString &sVersion, const QString &sInfo) {
+        SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_SOURCECODE, key, sVersion, sInfo, 0);
+        ss.sType = sType;
+        ss.sName = sName;
+        pBinaryInfo->basic_info.mapResultTexts.insert(key, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
+    };
 
-                pBinaryInfo->basic_info.mapTextHeaderDetects.insert(record.name, record);
+    if (bIsText) {
+        // DiE keeps text files under the Binary root and reports their encoding
+        // as a format record. NFD used to replace the root with Plain Text.
+        SCANS_STRUCT ssFormat = NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_PLAIN, "", "", 0);
+        ssFormat.sType = "format";
+        ssFormat.sName = pBinaryInfo->bIsUTF8 ? QString("UTF-8 text") : QString("Plain text");
+
+        QByteArray baHeader = binary.read_array(0, qMin(binary.getSize(), (qint64)4096));
+        qint32 nLF = baHeader.indexOf('\n');
+
+        if (nLF != -1) {
+            bool bCRLF = ((nLF > 0) && (baHeader.at(nLF - 1) == '\r')) || (((nLF + 1) < baHeader.size()) && (baHeader.at(nLF + 1) == '\r'));
+            ssFormat.sInfo = bCRLF ? QString("CRLF") : QString("LF");
+        } else if (baHeader.indexOf('\r') != -1) {
+            ssFormat.sInfo = "CR";
+        }
+
+        pBinaryInfo->basic_info.mapResultFormats.insert(ssFormat.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ssFormat));
+
+        const QRegularExpression::PatternOptions multiline = QRegularExpression::MultilineOption;
+        bool bHeader = QRegularExpression("^#ifndef\\s+(\\w+)[^\\r\\n]*\\s+^#define\\s+\\1\\b", multiline).match(sText).hasMatch() ||
+                       QRegularExpression("#\\s*pragma\\s+(?:once|hdrstop)").match(sText).hasMatch();
+        bool bCpp = QRegularExpression("^(?:class\\b|virtual\\b|public:|private:|template\\b)", multiline).match(sText).hasMatch() &&
+                    !QRegularExpression("\\sdef\\s").match(sText).hasMatch();
+        bool bCSource = bHeader || bCpp;
+        QRegularExpression includeExpression("^#include\\s+[\"<].*?[>\"]", multiline);
+        QRegularExpressionMatchIterator iterator = includeExpression.globalMatch(sText);
+
+        while (iterator.hasNext()) {
+            QString sInclude = iterator.next().captured(0);
+            bCSource = true;
+
+            if (!sInclude.contains('.')) {
+                bCpp = true;
             }
         }
 
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_CCPP)) {
-            SCANS_STRUCT ss = pBinaryInfo->basic_info.mapTextHeaderDetects.value(XScanEngine::RECORD_NAME_CCPP);
-            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
+        if (!bCSource) {
+            bCSource = QRegularExpression("^#define\\b", multiline).match(sText).hasMatch();
         }
 
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_PYTHON)) {
-            if ((pBinaryInfo->sHeaderText.contains("class")) && (pBinaryInfo->sHeaderText.contains("self"))) {
-                SCANS_STRUCT ss = pBinaryInfo->basic_info.mapTextHeaderDetects.value(XScanEngine::RECORD_NAME_PYTHON);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
+        if (bCSource) {
+            addTextRecord(XScanEngine::RECORD_NAME_CCPP, "source", bCpp ? QString("C++") : QString("C/C++"), "", bHeader ? QString("header") : QString());
+        }
+
+        QRegularExpression htmlExpression("^<\\s*(?:!DOCTYPE\\s+)?html\\b[^>]*>",
+                                          QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
+        if (htmlExpression.match(sText).hasMatch()) {
+            addTextRecord(XScanEngine::RECORD_NAME_HTML, "source", "HTML", "", "");
+        }
+
+        if (QRegularExpression("import\\s").match(sText).hasMatch() && QRegularExpression("class\\s").match(sText).hasMatch() && sText.contains("self") &&
+            QRegularExpression("\\sdef\\s").match(sText).hasMatch()) {
+            addTextRecord(XScanEngine::RECORD_NAME_PYTHON, "source", "Python", "", "");
+        }
+
+        if (sText.startsWith("<?xml")) {
+            QString sVersion;
+            QRegularExpressionMatch versionMatch = QRegularExpression("version=\"(.*?)\"").match(sText);
+
+            if (versionMatch.hasMatch()) {
+                sVersion = versionMatch.captured(1);
             }
+
+            addTextRecord(XScanEngine::RECORD_NAME_XML, "source", "XML", sVersion, "");
         }
 
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_HTML)) {
-            SCANS_STRUCT ss = pBinaryInfo->basic_info.mapTextHeaderDetects.value(XScanEngine::RECORD_NAME_HTML);
-            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
+        if (sText.startsWith("<?php")) {
+            addTextRecord(XScanEngine::RECORD_NAME_PHP, "source", "PHP", "", "");
         }
-
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_XML)) {
-            SCANS_STRUCT ss = pBinaryInfo->basic_info.mapTextHeaderDetects.value(XScanEngine::RECORD_NAME_XML);
-            ss.sVersion = XBinary::regExp("version=['\"](.*?)['\"]", pBinaryInfo->sHeaderText, 1);
-
-            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-        }
-
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_PHP)) {
-            SCANS_STRUCT ss = pBinaryInfo->basic_info.mapTextHeaderDetects.value(XScanEngine::RECORD_NAME_PHP);
-            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-        }
-
-        //        if(pBinaryInfo->basic_info.mapTextHeaderDetects.contains(RECORD_NAME_PERL))
-        //        {
-        //            SCANS_STRUCT ss=pBinaryInfo->basic_info.mapTextHeaderDetects.value(RECORD_NAME_PERL);
-        //            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name,scansToScan(&(pBinaryInfo->basic_info),&ss));
-        //        }
-
-        if (pBinaryInfo->basic_info.mapTextHeaderDetects.contains(XScanEngine::RECORD_NAME_SHELL)) {
-            QString sInterpreter;
-
-            if (sInterpreter == "") sInterpreter = XBinary::regExp("#!\\/usr\\/local\\/bin\\/(\\w+)", pBinaryInfo->sHeaderText, 1);  // #!/usr/local/bin/ruby
-            if (sInterpreter == "") sInterpreter = XBinary::regExp("#!\\/usr\\/bin\\/env (\\w+)", pBinaryInfo->sHeaderText, 1);      // #!/usr/bin/env perl
-            if (sInterpreter == "") sInterpreter = XBinary::regExp("#!\\/usr\\/bin\\/(\\w+)", pBinaryInfo->sHeaderText, 1);          // #!/usr/bin/perl
-            if (sInterpreter == "") sInterpreter = XBinary::regExp("#!\\/bin\\/(\\w+)", pBinaryInfo->sHeaderText, 1);                // #!/bin/sh
-            if (sInterpreter == "") sInterpreter = XBinary::regExp("#!(\\w+)", pBinaryInfo->sHeaderText, 1);                         // #!perl
-
-            if (sInterpreter == "perl") {
-                SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_TEXT, XScanEngine::RECORD_TYPE_SOURCECODE, XScanEngine::RECORD_NAME_PERL, "", "", 0);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-            } else if (sInterpreter == "sh") {
-                SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_TEXT, XScanEngine::RECORD_TYPE_SOURCECODE, XScanEngine::RECORD_NAME_SHELL, "", "", 0);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-            } else if (sInterpreter == "ruby") {
-                SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_TEXT, XScanEngine::RECORD_TYPE_SOURCECODE, XScanEngine::RECORD_NAME_RUBY, "", "", 0);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-            } else if (sInterpreter == "python") {
-                SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_TEXT, XScanEngine::RECORD_TYPE_SOURCECODE, XScanEngine::RECORD_NAME_PYTHON, "", "", 0);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-            } else {
-                SCANS_STRUCT ss =
-                    NFD_Binary::getScansStruct(0, XBinary::FT_TEXT, XScanEngine::RECORD_TYPE_SOURCECODE, XScanEngine::RECORD_NAME_SHELL, sInterpreter, "", 0);
-                pBinaryInfo->basic_info.mapResultTexts.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-            }
-        }
-
-        //        if(pBinaryInfo->basic_info.mapResultTexts.count()==0)
-        //        {
-        //            SCANS_STRUCT ss=NFD_Binary::getScansStruct(0,XBinary::FT_TEXT,RECORD_TYPE_FORMAT,RECORD_NAME_PLAIN,"","",0);
-
-        //            if(pBinaryInfo->unicodeType!=XBinary::UNICODE_TYPE_NONE)
-        //            {
-        //                ss.name=RECORD_NAME_UNICODE;
-
-        //                if(pBinaryInfo->unicodeType==XBinary::UNICODE_TYPE_BE)
-        //                {
-        //                    ss.sVersion="Big Endian";
-        //                }
-        //                else if(pBinaryInfo->unicodeType==XBinary::UNICODE_TYPE_LE)
-        //                {
-        //                    ss.sVersion="Little Endian";
-        //                }
-        //            }
-        //            else if(pBinaryInfo->bIsUTF8)
-        //            {
-        //                ss.name=XScanEngine::RECORD_NAME_UTF8;
-        //            }
-        //            else if(pBinaryInfo->bIsPlainText)
-        //            {
-        //                ss.name=XScanEngine::RECORD_NAME_PLAIN;
-        //            }
-
-        //            pBinaryInfo->basic_info.mapResultTexts.insert(ss.name,scansToScan(&(pBinaryInfo->basic_info),&ss));
-        //        }
     }
+
+    // A script may carry a binary payload (for example Makeself), so shebang
+    // recognition must not be restricted to files classified as plain text.
+    QString sFirstLine = sText.section('\n', 0, 0).trimmed();
+    QRegularExpressionMatch interpreterMatch = QRegularExpression("^#!\\s*(?:.*/)?(?:env\\s+)?([^\\s]+)").match(sFirstLine);
+
+    if (interpreterMatch.hasMatch()) {
+        QString sInterpreter = interpreterMatch.captured(1);
+
+        if (sInterpreter.endsWith(".exe", Qt::CaseInsensitive)) {
+            sInterpreter.chop(4);
+        }
+
+        QString sName;
+
+        if (sInterpreter.compare("sh", Qt::CaseInsensitive) == 0) {
+            sName = "Shell";
+        } else if (!sInterpreter.isEmpty()) {
+            sName = sInterpreter.toLower();
+            sName[0] = sName.at(0).toUpper();
+        }
+
+        if (!sName.isEmpty()) {
+            addTextRecord(XScanEngine::RECORD_NAME_SHELL, "script", sName, "", "");
+        }
+    }
+
+    Q_UNUSED(pPdStruct)
 }
 
 void NFD_Binary::handle_Archives(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, NFD_Binary::BINARYINFO_STRUCT *pBinaryInfo, XBinary::PDSTRUCT *pPdStruct)
@@ -3271,8 +3275,9 @@ void NFD_Binary::handle_ProtectorData(QIODevice *pDevice, XScanEngine::SCAN_OPTI
 void NFD_Binary::handle_LibraryData(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, NFD_Binary::BINARYINFO_STRUCT *pBinaryInfo)
 {
     XBinary binary(pDevice, pOptions->bIsImage);
+    bool bIsText = pBinaryInfo->bIsPlainText || (pBinaryInfo->unicodeType != XBinary::UNICODE_TYPE_NONE) || pBinaryInfo->bIsUTF8;
 
-    if ((pBinaryInfo->basic_info.mapHeaderDetects.contains(XScanEngine::RECORD_NAME_SHELL)) && (pBinaryInfo->basic_info.id.nSize >= 8)) {
+    if ((!bIsText) && (pBinaryInfo->basic_info.mapHeaderDetects.contains(XScanEngine::RECORD_NAME_SHELL)) && (pBinaryInfo->basic_info.id.nSize >= 8)) {
         QString sString = binary.read_ansiString(0);
 
         if (sString.contains("python")) {
@@ -3322,6 +3327,26 @@ void NFD_Binary::handle_Resources(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS 
 void NFD_Binary::handle_SFXData(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, NFD_Binary::BINARYINFO_STRUCT *pBinaryInfo)
 {
     XBinary binary(pDevice, pOptions->bIsImage);
+
+    if ((binary.getSize() >= 64) && (binary.read_uint8(0) == '#') && (binary.read_uint8(1) == '!')) {
+        QString sHeader = binary.read_ansiString(0, qMin(binary.getSize(), (qint64)16384));
+        QRegularExpression versionExpression("(?:ms_version\\s*=\\s*\"?([0-9.]+)\"?|makeself version\\s+([0-9.]+))",
+                                             QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch versionMatch = versionExpression.match(sHeader);
+
+        if (versionMatch.hasMatch() || sHeader.contains("ms_version=", Qt::CaseInsensitive)) {
+            QString sVersion = versionMatch.captured(1);
+
+            if (sVersion.isEmpty()) {
+                sVersion = versionMatch.captured(2);
+            }
+
+            SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_SFX, XScanEngine::RECORD_NAME_UNKNOWN, sVersion, "", 0);
+            ss.sType = "sfx";
+            ss.sName = "Makeself SFX archive";
+            pBinaryInfo->basic_info.mapResultSFX.insert(ss.name, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
+        }
+    }
 
     if ((pBinaryInfo->basic_info.mapHeaderDetects.contains(XScanEngine::RECORD_NAME_WINRAR)) && (pBinaryInfo->basic_info.id.nSize >= 20)) {
         SCANS_STRUCT ss = pBinaryInfo->basic_info.mapHeaderDetects.value(XScanEngine::RECORD_NAME_WINRAR);
@@ -3429,13 +3454,12 @@ NFD_Binary::BINARYINFO_STRUCT NFD_Binary::getInfo(QIODevice *pDevice, XBinary::F
         // TODO Try QTextStream functions! Check
         if (result.unicodeType != XBinary::UNICODE_TYPE_NONE) {
             result.sHeaderText = binary.read_unicodeString(2, qMin(result.basic_info.id.nSize, (qint64)0x1000), (result.unicodeType == XBinary::UNICODE_TYPE_BE));
-            result.basic_info.id.fileType = XBinary::FT_UNICODE;
         } else if (result.bIsUTF8) {
             result.sHeaderText = binary.read_utf8String(3, qMin(result.basic_info.id.nSize, (qint64)0x1000));
-            result.basic_info.id.fileType = XBinary::FT_UTF8;
         } else if (result.bIsPlainText) {
             result.sHeaderText = binary.read_ansiString(0, qMin(result.basic_info.id.nSize, (qint64)0x1000));
-            result.basic_info.id.fileType = XBinary::FT_PLAINTEXT;
+        } else if ((result.basic_info.id.nSize >= 2) && (binary.read_uint8(0) == '#') && (binary.read_uint8(1) == '!')) {
+            result.sHeaderText = binary.read_ansiString(0, qMin(result.basic_info.id.nSize, (qint64)0x4000));
         }
 
         NFD_Binary::handle_Texts(pDevice, pOptions, &result, pPdStruct);
@@ -3479,8 +3503,8 @@ QList<XScanEngine::SCANSTRUCT> NFD_Binary::convert(QList<SCAN_STRUCT> *pListScan
         record.parentId = pListScanStructs->at(i).parentId;
         record.type = pListScanStructs->at(i).type;
         record.name = pListScanStructs->at(i).name;
-        record.sType = XScanEngine::recordTypeIdToString(pListScanStructs->at(i).type);
-        record.sName = XScanEngine::recordNameIdToString(pListScanStructs->at(i).name);
+        record.sType = pListScanStructs->at(i).sType.isEmpty() ? XScanEngine::recordTypeIdToString(pListScanStructs->at(i).type) : pListScanStructs->at(i).sType;
+        record.sName = pListScanStructs->at(i).sName.isEmpty() ? XScanEngine::recordNameIdToString(pListScanStructs->at(i).name) : pListScanStructs->at(i).sName;
         record.sVersion = pListScanStructs->at(i).sVersion;
         record.sInfo = pListScanStructs->at(i).sInfo;
 

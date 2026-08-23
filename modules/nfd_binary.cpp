@@ -2272,6 +2272,8 @@ static NFD_Binary::SIGNATURE_RECORD g_archive_records[] = {
     {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_XZ, "", ""}, "FD'7zXZ'00"},
     {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_MACHOFAT, "", ""}, "CAFEBABE"},
     {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_MACHOFAT, "", ""}, "BEBAFECA"},
+    {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_MACHOFAT, "", "FAT64"}, "CAFEBABF"},
+    {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_MACHOFAT, "", "FAT64"}, "BFBAFECA"},
     {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_ZIP, "", ""}, "'PK'0304"},
     {{0, XBinary::FT_ARCHIVE, XScanEngine::RECORD_TYPE_FORMAT, XScanEngine::RECORD_NAME_ZIP, "", "Empty"}, "'PK'0506"},
 };

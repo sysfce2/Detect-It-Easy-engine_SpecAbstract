@@ -1500,8 +1500,7 @@ void NFD_PE::handle_Protection(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pO
         // not append a CAB.
         if (pe.checkOffsetSize(pPEInfo->osResourcesSection) && (pPEInfo->basic_info.scanOptions.bIsDeepScan)) {
             if (pe.find_ansiString(pPEInfo->osResourcesSection.nOffset, pPEInfo->osResourcesSection.nSize, "Actual Installer", pPdStruct) != -1) {
-                _SCANS_STRUCT ss =
-                    NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_INSTALLER, XScanEngine::RECORD_NAME_ACTUALINSTALLER, "", "", 0);
+                _SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_PE, XScanEngine::RECORD_TYPE_INSTALLER, XScanEngine::RECORD_NAME_ACTUALINSTALLER, "", "", 0);
                 pPEInfo->basic_info.mapResultInstallers.insert(ss.name, NFD_Binary::scansToScan(&(pPEInfo->basic_info), &ss));
             }
         }

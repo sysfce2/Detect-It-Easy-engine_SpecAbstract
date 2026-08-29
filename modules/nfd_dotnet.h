@@ -45,8 +45,7 @@ public:
     static qint32 getDotUnicodeStringsRecordsSize();
 
     // Main .NET / CLI assembly analysis function
-    static DOTNETINFO_STRUCT getInfo(QIODevice *pDevice, XScanEngine::SCANID parentId, XScanEngine::SCAN_OPTIONS *pOptions, qint64 nOffset,
-                                     XBinary::PDSTRUCT *pPdStruct);
+    static DOTNETINFO_STRUCT getInfo(QIODevice *pDevice, XScanEngine::SCANID parentId, XScanEngine::SCAN_OPTIONS *pOptions, qint64 nOffset, XBinary::PDSTRUCT *pPdStruct);
 
     // .NET protection/obfuscation detection (moved from NFD_PE::handle_NETProtection)
     static void handle_Protection(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOptions, DOTNETINFO_STRUCT *pDOTNETInfo, XBinary::PDSTRUCT *pPdStruct);

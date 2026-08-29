@@ -28,18 +28,13 @@ NFD_NE::NFD_NE(XNE *pNE, XBinary::FILEPART filePart, const OPTIONS &scanOptions,
 // which is characteristic of the toolchain even though the rest of the image is user code.
 static NFD_Binary::SIGNATURE_RECORD g_NE_entrypoint_records[] = {
     // Borland C++ for Windows - three distinct RTL startups
-    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1994", "type 2"},
-     "893E..0056571E510656E3"},
-    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1994", "type 1"},
-     "53510633C0509AFFFF0000"},
-    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1993", "type 1"},
-     "53510633C050E8....580759"},
+    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1994", "type 2"}, "893E..0056571E510656E3"},
+    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1994", "type 1"}, "53510633C0509AFFFF0000"},
+    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_BORLANDCPP, "1993", "type 1"}, "53510633C050E8....580759"},
     // Borland Pascal for Windows 7.x
-    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_TURBOPASCAL, "7.X", "Windows"},
-     "9AFFFF00009AFFFF00009AFF"},
+    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_COMPILER, XScanEngine::RECORD_NAME_TURBOPASCAL, "7.X", "Windows"}, "9AFFFF00009AFFFF00009AFF"},
     // PKZIP self-extractor (NE build)
-    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_SFX, XScanEngine::RECORD_NAME_PKSFX, "", ""},
-     "FCA3....891E....49890E"},
+    {{0, XBinary::FT_NE, XScanEngine::RECORD_TYPE_SFX, XScanEngine::RECORD_NAME_PKSFX, "", ""}, "FCA3....891E....49890E"},
 };
 
 NFD_Binary::SIGNATURE_RECORD *NFD_NE::getEntryPointRecords()

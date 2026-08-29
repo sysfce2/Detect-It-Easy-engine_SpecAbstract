@@ -37,7 +37,7 @@ NFD_Binary::STRING_RECORD _DOTNET_dot_ansistrings_records[] = {
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_YANO, "1.X", ""}, "YanoAttribute"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_AGILENET, "", ""}, "ObfuscatedByAgileDotNetAttribute"},
     //    {{0, XBinary::FT_CLI_ASSEMBLY,        XScanEngine::RECORD_TYPE_NETOBFUSCATOR,    XScanEngine::RECORD_NAME_SKATERNET,                    "",             ""},
-    //    "Skater_NET_Obfuscator"}, {1, XBinary::FT_CLI_ASSEMBLY,        XScanEngine::RECORD_TYPE_NETOBFUSCATOR,    XScanEngine::RECORD_NAME_SKATERNET,                    "", ""},
+    //    "Skater_NET_Obfuscator"}, {1, XBinary::FT_CLI_ASSEMBLY,        XScanEngine::RECORD_TYPE_NETOBFUSCATOR,    XScanEngine::RECORD_NAME_SKATERNET, "", ""},
     //    "RustemSoft.Skater"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_BABELNET, "3.X", ""}, "BabelAttribute"},  // TODO Version
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_BABELNET, "1.X-2.X", ""}, "BabelObfuscatorAttribute"},
@@ -46,13 +46,15 @@ NFD_Binary::STRING_RECORD _DOTNET_dot_ansistrings_records[] = {
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_CLISECURE, "3.X", ""}, "CliSecureRd64.dll"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_TOOL, XScanEngine::RECORD_NAME_EMBARCADERODELPHIDOTNET, "XE*", ""}, "Borland.Studio.Delphi"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_TOOL, XScanEngine::RECORD_NAME_EMBARCADERODELPHIDOTNET, "8", ""}, "Borland.Vcl.Types"},
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_CRYPTOOBFUSCATORFORNET, "", ""}, "CryptoObfuscator"},  // TODO Version, die
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_DEEPSEA, "4.X", ""}, "DeepSeaObfuscator"},             // TODO Version, die
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_GOLIATHNET, "", ""}, "ObfuscatedByGoliath"},           // TODO Version, die
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_CRYPTOOBFUSCATORFORNET, "", ""},
+     "CryptoObfuscator"},                                                                                                                         // TODO Version, die
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_DEEPSEA, "4.X", ""}, "DeepSeaObfuscator"},    // TODO Version, die
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_GOLIATHNET, "", ""}, "ObfuscatedByGoliath"},  // TODO Version, die
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_MACROBJECT, "", ""},
-     "Obfuscated by Macrobject Obfuscator.NET"},                                                                                                          // TODO Version
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SOFTWAREZATOR, "", ""}, "ObfuscatedBySoftwareZatorAttribute"},  // TODO Version
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_PACKER, XScanEngine::RECORD_NAME_NSPACK, "2.X-3.X", ".NET"}, "nsnet"},                                  // TODO Version
+     "Obfuscated by Macrobject Obfuscator.NET"},  // TODO Version
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SOFTWAREZATOR, "", ""},
+     "ObfuscatedBySoftwareZatorAttribute"},                                                                                         // TODO Version
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_PACKER, XScanEngine::RECORD_NAME_NSPACK, "2.X-3.X", ".NET"}, "nsnet"},  // TODO Version
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_DNGUARD, "", ""}, "ZYXDNGuarder"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_DNGUARD, "", ""}, "HVMRuntm.dll"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETCOMPRESSOR, XScanEngine::RECORD_NAME_DOTNETZ, "", ""}, "NetzStarter"},
@@ -60,7 +62,8 @@ NFD_Binary::STRING_RECORD _DOTNET_dot_ansistrings_records[] = {
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_PHOENIXPROTECTOR, "", ""}, "?1?.?9?.resources"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETCOMPRESSOR, XScanEngine::RECORD_NAME_SIXXPACK, "", ""}, "Sixxpack"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SMARTASSEMBLY, "", ""}, "SmartAssembly.Attributes"},
-    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SMARTASSEMBLY, "", ""}, "SmartAssembly.Attributes.PoweredByAttribute"},
+    {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SMARTASSEMBLY, "", ""},
+     "SmartAssembly.Attributes.PoweredByAttribute"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_CONFUSER, "1.X", ""}, "ConfusedByAttribute"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_SPICESNET, "", ""}, "NineRays.Obfuscator"},
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_NETOBFUSCATOR, XScanEngine::RECORD_NAME_OBFUSCATORNET2009, "", ""}, "Macrobject.Obfuscator"},
@@ -76,7 +79,6 @@ const qint32 _DOTNET_dot_ansistrings_records_size = sizeof(_DOTNET_dot_ansistrin
 NFD_Binary::STRING_RECORD _DOTNET_dot_unicodestrings_records[] = {
     {{0, XBinary::FT_CLI_ASSEMBLY, XScanEngine::RECORD_TYPE_PROTECTOR, XScanEngine::RECORD_NAME_CODEVEIL, "3.X-4.X", ""}, "E_TamperDetected"}};
 const qint32 _DOTNET_dot_unicodestrings_records_size = sizeof(_DOTNET_dot_unicodestrings_records);
-
 
 NFD_Binary::STRING_RECORD *NFD_DOTNET::getDotAnsiStringsRecords()
 {
@@ -137,14 +139,30 @@ void NFD_DOTNET::handle_Protection(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS
 
     // .NET obfuscators detected by metadata ANSI strings (attributes, type names)
     const XScanEngine::RECORD_NAME arrObfuscators[] = {
-        XScanEngine::RECORD_NAME_YANO,           XScanEngine::RECORD_NAME_DOTFUSCATOR,       XScanEngine::RECORD_NAME_AGILENET,
-        XScanEngine::RECORD_NAME_BABELNET,       XScanEngine::RECORD_NAME_GOLIATHNET,        XScanEngine::RECORD_NAME_SPICESNET,
-        XScanEngine::RECORD_NAME_OBFUSCATORNET2009, XScanEngine::RECORD_NAME_DEEPSEA,        XScanEngine::RECORD_NAME_MAXTOCODE,
-        XScanEngine::RECORD_NAME_PHOENIXPROTECTOR, XScanEngine::RECORD_NAME_SMARTASSEMBLY,   XScanEngine::RECORD_NAME_CONFUSER,
-        XScanEngine::RECORD_NAME_XENOCODEPOSTBUILD, XScanEngine::RECORD_NAME_CODEVEIL,       XScanEngine::RECORD_NAME_EAZFUSCATOR,
-        XScanEngine::RECORD_NAME_DOTNETSPIDER,   XScanEngine::RECORD_NAME_CLISECURE,         XScanEngine::RECORD_NAME_DNGUARD,
-        XScanEngine::RECORD_NAME_OBFUSCAR,       XScanEngine::RECORD_NAME_SKATER,            XScanEngine::RECORD_NAME_CRYPTOOBFUSCATORFORNET,
-        XScanEngine::RECORD_NAME_SOFTWAREZATOR,  XScanEngine::RECORD_NAME_MACROBJECT,        XScanEngine::RECORD_NAME_CODEWALL,
+        XScanEngine::RECORD_NAME_YANO,
+        XScanEngine::RECORD_NAME_DOTFUSCATOR,
+        XScanEngine::RECORD_NAME_AGILENET,
+        XScanEngine::RECORD_NAME_BABELNET,
+        XScanEngine::RECORD_NAME_GOLIATHNET,
+        XScanEngine::RECORD_NAME_SPICESNET,
+        XScanEngine::RECORD_NAME_OBFUSCATORNET2009,
+        XScanEngine::RECORD_NAME_DEEPSEA,
+        XScanEngine::RECORD_NAME_MAXTOCODE,
+        XScanEngine::RECORD_NAME_PHOENIXPROTECTOR,
+        XScanEngine::RECORD_NAME_SMARTASSEMBLY,
+        XScanEngine::RECORD_NAME_CONFUSER,
+        XScanEngine::RECORD_NAME_XENOCODEPOSTBUILD,
+        XScanEngine::RECORD_NAME_CODEVEIL,
+        XScanEngine::RECORD_NAME_EAZFUSCATOR,
+        XScanEngine::RECORD_NAME_DOTNETSPIDER,
+        XScanEngine::RECORD_NAME_CLISECURE,
+        XScanEngine::RECORD_NAME_DNGUARD,
+        XScanEngine::RECORD_NAME_OBFUSCAR,
+        XScanEngine::RECORD_NAME_SKATER,
+        XScanEngine::RECORD_NAME_CRYPTOOBFUSCATORFORNET,
+        XScanEngine::RECORD_NAME_SOFTWAREZATOR,
+        XScanEngine::RECORD_NAME_MACROBJECT,
+        XScanEngine::RECORD_NAME_CODEWALL,
     };
 
     const qint32 nNumberOfObfuscators = sizeof(arrObfuscators) / sizeof(arrObfuscators[0]);

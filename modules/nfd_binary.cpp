@@ -2449,8 +2449,7 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
             addTextRecord(XScanEngine::RECORD_NAME_CCPP, "source", bCpp ? QString("C++") : QString("C/C++"), "", bHeader ? QString("header") : QString());
         }
 
-        QRegularExpression htmlExpression("^<\\s*(?:!DOCTYPE\\s+)?html\\b[^>]*>",
-                                          QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
+        QRegularExpression htmlExpression("^<\\s*(?:!DOCTYPE\\s+)?html\\b[^>]*>", QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
         if (htmlExpression.match(sText).hasMatch()) {
             addTextRecord(XScanEngine::RECORD_NAME_HTML, "source", "HTML", "", "");
         }
@@ -3332,8 +3331,7 @@ void NFD_Binary::handle_SFXData(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *p
 
     if ((binary.getSize() >= 64) && (binary.read_uint8(0) == '#') && (binary.read_uint8(1) == '!')) {
         QString sHeader = binary.read_ansiString(0, qMin(binary.getSize(), (qint64)16384));
-        QRegularExpression versionExpression("(?:ms_version\\s*=\\s*\"?([0-9.]+)\"?|makeself version\\s+([0-9.]+))",
-                                             QRegularExpression::CaseInsensitiveOption);
+        QRegularExpression versionExpression("(?:ms_version\\s*=\\s*\"?([0-9.]+)\"?|makeself version\\s+([0-9.]+))", QRegularExpression::CaseInsensitiveOption);
         QRegularExpressionMatch versionMatch = versionExpression.match(sHeader);
 
         if (versionMatch.hasMatch() || sHeader.contains("ms_version=", Qt::CaseInsensitive)) {

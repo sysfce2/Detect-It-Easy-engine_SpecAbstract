@@ -22,7 +22,6 @@
 #include "modules/nfd_binary.h"
 #include "modules/nfd_elf.h"
 #include "modules/nfd_javaclass.h"
-#include "modules/nfd_rar.h"
 #include "modules/nfd_apk.h"
 #include "modules/nfd_le.h"
 #include "modules/nfd_lx.h"
@@ -85,9 +84,6 @@ void SpecAbstract::_processDetect(XScanEngine::SCANID *pScanID, XScanEngine::SCA
         // mb TODO split detects
         NFD_ZIP::ZIPINFO_STRUCT zip_info = NFD_ZIP::getInfo(pDevice, parentId, pScanOptions, 0, pPdStruct);
         basic_info = zip_info.basic_info;
-    } else if (fileType == XBinary::FT_RAR) {
-        NFD_RAR::RARINFO_STRUCT rar_info = NFD_RAR::getInfo(pDevice, parentId, pScanOptions, 0, pPdStruct);
-        basic_info = rar_info.basic_info;
     } else if (fileType == XBinary::FT_JAVACLASS) {
         NFD_JavaClass::JAVACLASSINFO_STRUCT javaclass_info = NFD_JavaClass::getInfo(pDevice, parentId, pScanOptions, 0, pPdStruct);
         basic_info = javaclass_info.basic_info;

@@ -27,8 +27,6 @@ set(SPECABSTRACT_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_jar.h
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_archive.cpp
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_archive.h
-    ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_rar.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_rar.h
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_npm.cpp
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_npm.h
     ${CMAKE_CURRENT_LIST_DIR}/modules/nfd_machofat.cpp

@@ -21,8 +21,8 @@
 #ifndef NFD_BINARY_H
 #define NFD_BINARY_H
 
-#include "binary_script.h"
 #include "xscanengine.h"
+#include "binary_script.h"
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 #include <QtCore/QMap>

@@ -24,12 +24,6 @@
 #ifndef USE_ARCHIVE
 #define USE_ARCHIVE
 #endif
-#ifndef USE_DEX
-#define USE_DEX
-#endif
-#ifndef USE_PDF
-#define USE_PDF
-#endif
 
 #include "xscanengine.h"
 #include "xscanengineprocess.h"
@@ -43,7 +37,6 @@
 #include "modules/nfd_msdos.h"
 // Newly delegated NFD modules
 #include "modules/nfd_javaclass.h"
-#include "modules/nfd_rar.h"
 #include "modules/nfd_le.h"
 #include "modules/nfd_lx.h"
 #include "modules/nfd_ne.h"

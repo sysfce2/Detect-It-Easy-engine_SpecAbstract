@@ -27,6 +27,20 @@
 
 #include <QRegularExpression>
 
+namespace {
+
+void addTextRecord(NFD_Binary::BINARYINFO_STRUCT *pBinaryInfo, XScanEngine::RECORD_NAME key, const QString &sType, const QString &sName, const QString &sVersion,
+                   const QString &sInfo)
+{
+    NFD_Binary::SCANS_STRUCT scansStruct =
+        NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_SOURCECODE, key, sVersion, sInfo, 0);
+    scansStruct.sType = sType;
+    scansStruct.sName = sName;
+    pBinaryInfo->basic_info.mapResultTexts.insert(key, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &scansStruct));
+}
+
+}  // namespace
+
 NFD_Binary::NFD_Binary(XBinary *pBinary, XBinary::FILEPART filePart, const OPTIONS &scanOptions, XBinary::PDSTRUCT *pPdStruct)
     : Binary_Script(pBinary, filePart, scanOptions, pPdStruct)
 {
@@ -2398,13 +2412,6 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
     const bool bIsText = pBinaryInfo->bIsPlainText || (pBinaryInfo->unicodeType != XBinary::UNICODE_TYPE_NONE) || pBinaryInfo->bIsUTF8;
     const QString &sText = pBinaryInfo->sHeaderText;
 
-    auto addTextRecord = [pBinaryInfo](XScanEngine::RECORD_NAME key, const QString &sType, const QString &sName, const QString &sVersion, const QString &sInfo) {
-        SCANS_STRUCT ss = NFD_Binary::getScansStruct(0, XBinary::FT_BINARY, XScanEngine::RECORD_TYPE_SOURCECODE, key, sVersion, sInfo, 0);
-        ss.sType = sType;
-        ss.sName = sName;
-        pBinaryInfo->basic_info.mapResultTexts.insert(key, NFD_Binary::scansToScan(&(pBinaryInfo->basic_info), &ss));
-    };
-
     if (bIsText) {
         // DiE keeps text files under the Binary root and reports their encoding
         // as a format record. NFD used to replace the root with Plain Text.
@@ -2447,17 +2454,18 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
         }
 
         if (bCSource) {
-            addTextRecord(XScanEngine::RECORD_NAME_CCPP, "source", bCpp ? QString("C++") : QString("C/C++"), "", bHeader ? QString("header") : QString());
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_CCPP, "source", bCpp ? QString("C++") : QString("C/C++"), "",
+                          bHeader ? QString("header") : QString());
         }
 
         QRegularExpression htmlExpression("^<\\s*(?:!DOCTYPE\\s+)?html\\b[^>]*>", QRegularExpression::MultilineOption | QRegularExpression::CaseInsensitiveOption);
         if (htmlExpression.match(sText).hasMatch()) {
-            addTextRecord(XScanEngine::RECORD_NAME_HTML, "source", "HTML", "", "");
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_HTML, "source", "HTML", "", "");
         }
 
         if (QRegularExpression("import\\s").match(sText).hasMatch() && QRegularExpression("class\\s").match(sText).hasMatch() && sText.contains("self") &&
             QRegularExpression("\\sdef\\s").match(sText).hasMatch()) {
-            addTextRecord(XScanEngine::RECORD_NAME_PYTHON, "source", "Python", "", "");
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_PYTHON, "source", "Python", "", "");
         }
 
         if (sText.startsWith("<?xml")) {
@@ -2468,11 +2476,11 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
                 sVersion = versionMatch.captured(1);
             }
 
-            addTextRecord(XScanEngine::RECORD_NAME_XML, "source", "XML", sVersion, "");
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_XML, "source", "XML", sVersion, "");
         }
 
         if (sText.startsWith("<?php")) {
-            addTextRecord(XScanEngine::RECORD_NAME_PHP, "source", "PHP", "", "");
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_PHP, "source", "PHP", "", "");
         }
     }
 
@@ -2498,7 +2506,7 @@ void NFD_Binary::handle_Texts(QIODevice *pDevice, XScanEngine::SCAN_OPTIONS *pOp
         }
 
         if (!sName.isEmpty()) {
-            addTextRecord(XScanEngine::RECORD_NAME_SHELL, "script", sName, "", "");
+            addTextRecord(pBinaryInfo, XScanEngine::RECORD_NAME_SHELL, "script", sName, "", "");
         }
     }
 
